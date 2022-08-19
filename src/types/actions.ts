@@ -30,8 +30,8 @@ export interface ActionsOfJ2C {
   /**
    * 事件交互
    * @param {Object} {action,target?,params?}
-   * @param {String} action 事件名
-   * @param {String} target 可选，目标对象的ID
+   * @param {String} action 行为名，客户端定义的`baseDb.actions`中的行为
+   * @param {String} target 可选，目标对象的name
    * @param {Object} params 可选，参数列表(属性的名和值就是参数的列表)
    */
   'mode.event': { action: string; target?: string; params?: any }

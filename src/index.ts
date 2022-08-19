@@ -10,9 +10,12 @@ import {
 } from './types'
 export { ClientInterface, ClientOptions }
 
+const $c = window.console
 function log(msg: string, ...args: any[]) {
-  const $c = window.console
   $c.log(`%c [PiClientJS] ${msg}`, 'color:#eb906e', ...args)
+}
+function logErr(msg: string, ...args: any[]) {
+  $c.log(`%c [PiClientJS Error] ${msg}`, 'color:red', ...args)
 }
 
 const CLIENT_CALLBACK_NAME = 'piClientEvent'
@@ -22,10 +25,13 @@ const defaultOptions: ClientOptions = {
 }
 
 export class PiClient {
+  /**
+   * 版本
+   */
   readonly _v = version
   private _ins: ClientInterface
   private _opts: ClientOptions = defaultOptions
-  private _cbs: TempCallbackFns
+  private _cbs: TempCallbackFns = {}
 
   /**
    * 客户端支持的所有场景对象的类型
@@ -55,31 +61,24 @@ export class PiClient {
     if (!this._ins) {
       this._ins = {
         broadcast(fn, params) {
-          log(`fix j2c event[${fn}]`, params)
+          // log(`fix j2c event[${fn}]`, params)
         },
       }
 
-      throw new Error('Not in client of the PiCIMOS.')
+      logErr('Not in the client of PiCIMOS.')
+
+      return
     }
 
     log(`version[${this._v}].`)
-
-    this.trigger = this.j2c
 
     // 合并配置
     this._opts = Object.assign(defaultOptions, options)
 
     // 注入回调入口
     this._ins[CLIENT_CALLBACK_NAME] = this.c2J
-
-    this._cbs = [] as TempCallbackFns
   }
 
-  private j2c<K extends keyof ActionsOfJ2C>(fn: K, params?: ActionsOfJ2C[K]) {
-    if (this._opts.debug) log(`j2c event[${fn}]`, params)
-
-    this._ins.broadcast(fn, JSON.stringify(params))
-  }
   private c2J(param: ParamsOfC2J) {
     const { action, target, params } = param || {}
 
@@ -95,7 +94,11 @@ export class PiClient {
    * @param fn 事件名
    * @param params 参数
    */
-  trigger
+  trigger<K extends keyof ActionsOfJ2C>(fn: K, params?: ActionsOfJ2C[K]) {
+    if (this._opts.debug) log(`j2c event[${fn}]`, params)
+
+    this._ins.broadcast(fn, JSON.stringify(params))
+  }
 
   /**
    * 监听行为事件
@@ -130,6 +133,9 @@ export class PiClient {
     return false
   }
 
+  /**
+   * 页面初始加载完成的调用
+   */
   pageReady(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.on('baseDb', 'world', ({ params }: ParamsOfC2J) => {
@@ -137,14 +143,15 @@ export class PiClient {
         this.classEvents = params.classEvents
         this.actions = params.actions
         this.globalObjects = params.globalObjects
-
-        resolve()
       })
       this.on('worldObjects', 'world', ({ params }: ParamsOfC2J) => {
         this.worldObjects = params.objects
+
+        // 场景对象集加载完成 定义为客户端场景初始化完毕
+        resolve()
       })
 
-      this.j2c('mode.event', { action: 'page.loadCompleted' })
+      this.trigger('mode.event', { action: 'page.loadCompleted' })
     })
   }
 }
