@@ -37,7 +37,7 @@ piClient.trigger('scene.moveCameraByOffset', { offsetX: 123, offsetY: 0 })
 // 释放前可多次触发scene.moveCameraByOffset
 
 // 释放相机控制
-piClient.trigger('scene.setCanvasMovingState', { bMoving: true })
+piClient.trigger('scene.setCanvasMovingState', { bMoving: false })
 ```
 
 ```typescript
