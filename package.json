@@ -1,0 +1,41 @@
+{
+  "name": "piclient.js",
+  "version": "0.1.0",
+  "author": "hn <heng.l608@gmail.com>",
+  "description": "PiClient(Pronounced as: /paɪ ˈklaɪənt/) js sdk.",
+  "main": "lib/index.cjs.js",
+  "module": "lib/index.esm.js",
+  "browser": "lib/index.umd.js",
+  "types": "lib/types",
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "build": "rm -rf lib && rollup -c",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "yarn build",
+    "preversion": "yarn lint",
+    "version": "yarn format",
+    "remove!": "npm --force unpublish piclient.js"
+  },
+  "keywords": [
+    "PiClient",
+    "picimos",
+    "piaoshi",
+    "PiAdmin"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.2",
+    "@rollup/plugin-json": "^4.1.0",
+    "prettier": "^2.7.1",
+    "rollup": "^2.78.0",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.32.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.7.4"
+  }
+}
