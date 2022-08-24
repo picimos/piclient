@@ -4,7 +4,7 @@
     // "baseUrl": "src/", 
     "outDir": "lib", // 输出目录
     "sourceMap": false, // 是否生成sourceMap
-    "target": "esnext", // 编译目标
+    "target": "ES2015", // 编译目标
     "module": "ES2015", // 模块类型
     "moduleResolution": "node",
     "allowJs": false, // 是否编辑js文件
@@ -13,6 +13,7 @@
     "experimentalDecorators": true, // 启动装饰器
     "resolveJsonModule": true, // 加载json
     "forceConsistentCasingInFileNames": true, // 区分大小写
+    "importHelpers": true,
     "esModuleInterop": true,
     "removeComments": false, // 删除注释
     "declaration": false,
