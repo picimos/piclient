@@ -2,14 +2,11 @@
   "name": "piclient.js",
   "version": "0.1.0",
   "author": "hn <heng.l608@gmail.com>",
-  "description": "PiClient(Pronounced as: /paɪ ˈklaɪənt/) js sdk.",
-  "main": "lib/index.cjs.js",
-  "module": "lib/index.esm.js",
-  "browser": "lib/index.umd.js",
-  "types": "lib/types",
-  "files": [
-    "lib/**/*"
-  ],
+  "description": "The JSBridge for the client of PiCIMOS.",
+  "main": "index.cjs.js",
+  "module": "index.esm.js",
+  "browser": "index.umd.js",
+  "types": "types",
   "scripts": {
     "build": "rm -rf lib && rollup -c",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
@@ -17,7 +14,8 @@
     "prepare": "yarn build",
     "preversion": "yarn lint",
     "version": "yarn format",
-    "remove!": "npm --force unpublish piclient.js"
+    "remove!": "npm --force unpublish piclient.js",
+    "pub": "npm run build && cd ./lib && npm publish && cd .."
   },
   "keywords": [
     "PiClient",
