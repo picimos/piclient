@@ -5,7 +5,6 @@ import dts from 'rollup-plugin-dts'
 const commonjs = require('@rollup/plugin-commonjs')
 const json = require('@rollup/plugin-json')
 const pkg = require('./package.json')
-const buildPlugin = require('./build')
 
 const resolvePath = (_path) => path.resolve(__dirname, _path)
 
@@ -37,7 +36,6 @@ const config = [
         tsconfig: resolvePath('./tsconfig.json'),
       }),
       terser(),
-      buildPlugin(),
     ],
   },
   // 生成类型声明文件
