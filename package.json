@@ -7,6 +7,9 @@
   "module": "index.esm.js",
   "browser": "index.umd.js",
   "types": "types",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "build": "rm -rf lib && rollup -c",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",

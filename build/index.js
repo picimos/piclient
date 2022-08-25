@@ -11,6 +11,9 @@ function buildPlugin() {
     name: 'build:cp',
     closeBundle() {
       delete pkg.scripts
+      delete pkg.files
+      delete pkg.devDependencies
+
       writeFileSync(
         join(outDir, 'package.json'),
         JSON.stringify(pkg, null, 2),
