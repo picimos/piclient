@@ -7,9 +7,7 @@ const json = require('@rollup/plugin-json')
 const pkg = require('./package.json')
 const buildPlugin = require('./build')
 
-const outDir = 'lib'
 const resolvePath = (...paths) => path.resolve(__dirname, ...paths)
-const outFile = (file) => path.join(outDir, file)
 
 const banner = ''
 // '/*!\n' +
@@ -26,9 +24,9 @@ const config = [
 
     // 打包后的出口和设置
     output: [
-      { file: outFile(pkg.main), format: 'cjs', banner },
-      { file: outFile(pkg.module), format: 'es', banner },
-      { file: outFile(pkg.browser), format: 'umd', name: 'PiClientJS', banner },
+      { file: pkg.main, format: 'cjs', banner },
+      { file: pkg.module, format: 'es', banner },
+      { file: pkg.browser, format: 'umd', name: 'PiClientJS', banner },
     ],
 
     // 使用的插件
@@ -47,7 +45,7 @@ const config = [
     input: 'src/index.ts',
     output: [
       {
-        file: path.join(resolvePath(outDir, pkg.types), 'index.d.ts'),
+        file: path.join(resolvePath(pkg.types), 'index.d.ts'),
         format: 'es',
       },
     ],

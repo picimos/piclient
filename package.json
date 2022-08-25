@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "author": "hn <heng.l608@gmail.com>",
   "description": "The JSBridge for the client of PiCIMOS.",
-  "main": "index.cjs.js",
-  "module": "index.esm.js",
-  "browser": "index.umd.js",
-  "types": "types",
+  "main": "lib/index.cjs.js",
+  "module": "lib/index.esm.js",
+  "browser": "lib/index.umd.js",
+  "types": "lib/types",
   "files": [
     "lib/**/*"
   ],

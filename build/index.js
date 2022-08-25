@@ -6,13 +6,20 @@ const dir = resolve(__dirname, '..')
 const outDir = resolve(dir, 'lib')
 const copyFiles = ['README.md', 'CHANGELOG.md', 'LICENSE']
 
+const cleanPkg = () => {
+  delete pkg.scripts
+  delete pkg.files
+  delete pkg.devDependencies
+  ;['main', 'module', 'browser', 'types'].forEach((i) => {
+    pkg[i] = pkg[i].replace('lib/', '')
+  })
+}
+
 function buildPlugin() {
   return {
     name: 'build:cp',
     closeBundle() {
-      delete pkg.scripts
-      delete pkg.files
-      delete pkg.devDependencies
+      cleanPkg()
 
       writeFileSync(
         join(outDir, 'package.json'),
