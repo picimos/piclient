@@ -1,6 +1,6 @@
 {
   "name": "piclient.js",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "hn <heng.l608@gmail.com>",
   "description": "The JSBridge for the client of PiCIMOS.",
   "main": "lib/index.cjs.js",
