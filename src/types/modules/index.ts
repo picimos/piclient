@@ -7,6 +7,10 @@ export interface Actions
     ModuleModeActions,
     ModuleGeneralActions {}
 
+export interface DynamicActions extends Actions {
+  [action: string]: any
+}
+
 export type ActionName = keyof Actions
 
 // export function ActionOfJ2C<K extends ActionName>(action: K, params: Actions[K]): void

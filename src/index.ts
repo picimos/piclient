@@ -2,6 +2,7 @@ import { version } from '../package.json'
 import {
   ActionName,
   Actions,
+  DynamicActions,
   PiClientBaseDatas,
   PiClientBridgeInterface,
   PiClientCallbackFn,
@@ -137,17 +138,24 @@ class PiClient implements PiClientBaseDatas {
     param: Actions[K],
     callback?: PiClientCallbackFn,
   ): Promise<PiClientCallbackParams>
-  emit(
-    action: string,
-    param?: any,
+  /**
+   * 触发动态事件行为
+   * @param action 事件行为名
+   * @param param 输入参数
+   * @param callback 事件行为的逻辑回调函数
+   * @returns 触发是否成功
+   */
+  emit<K extends keyof DynamicActions>(
+    action: K,
+    param?: DynamicActions[K],
     callback?: PiClientCallbackFn,
   ): Promise<PiClientCallbackParams>
-  emit<K extends ActionName & string>(
-    action: K,
-    param?: Actions[K] | any,
+  emit<K extends ActionName>(
+    action: K | string,
+    param: K extends ActionName ? Actions[K] : DynamicActions[K],
     callback?: PiClientCallbackFn,
   ) {
-    const { target, ...params } = param || {}
+    const { target, ...params } = param || ({} as any)
     const defaultTarget = target || DEFAULT_TARGET
 
     if (this._opts.debug)
