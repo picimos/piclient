@@ -1,9 +1,10 @@
 const path = require('path')
+const commonjs = require('@rollup/plugin-commonjs')
+const json = require('@rollup/plugin-json')
 const { terser } = require('rollup-plugin-terser')
 const typescript = require('rollup-plugin-typescript2')
 import dts from 'rollup-plugin-dts'
-const commonjs = require('@rollup/plugin-commonjs')
-const json = require('@rollup/plugin-json')
+import serve from 'rollup-plugin-serve'
 const pkg = require('./package.json')
 const buildPlugin = require('./build')
 
@@ -16,6 +17,20 @@ const banner = ''
 // ` * Copyright (c) 2022-${new Date().getFullYear()}\n` +
 // ' * Released under the MIT License in hn.\n' +
 // ' */\n'
+
+const isProd = process.env.NODE_ENV === 'production'
+
+const envPlugins = isProd
+  ? []
+  : [
+      serve({
+        open: true,
+        openPage: '/mockClient.html',
+        host: 'localhost',
+        port: 34666,
+        contentBase: ['example', 'lib'],
+      }),
+    ]
 
 const config = [
   {
@@ -38,6 +53,7 @@ const config = [
       }),
       terser(),
       buildPlugin(),
+      ...envPlugins,
     ],
   },
   // 生成类型声明文件
