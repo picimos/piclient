@@ -115,8 +115,8 @@ piclient
 
 ---
 
-> ## 更多 API 请查看 [API 列表](./PiAPIs.md)
+> ## 更多 API 请查看 [API 列表](https://github.com/ioolllzzzz/piclient.js/blob/main/PiAPIs.md)
 
 ---
 
-> ## [更新日志](./CHANGELOG.md)
+> ## [更新日志](https://github.com/ioolllzzzz/piclient.js/blob/main/CHANGELOG.md)
