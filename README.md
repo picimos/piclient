@@ -36,20 +36,17 @@ piclient
 
   ```typescript
   piclient
-    .emit({ action, params, callback })
+    .emit(action, param?, callback?)
     .then((res: PiClientCallbackParams) => {})
 
   //--- 调用示例 ---
 
   // 对象显隐
-  piclient.emit({
-    action: 'object.visible',
-    params: {
-      // 目标对象name
-      target: '',
-      // show|hide|toggle
-      visible: '',
-    },
+  piclient.emit('object.visible', {
+    // 目标对象name
+    target: '',
+    // show|hide|toggle
+    visible: '',
   })
 
   // etc.
