@@ -4,7 +4,7 @@ const pkg = require('../package.json')
 
 const dir = resolve(__dirname, '..')
 const outDir = resolve(dir, 'lib')
-const copyFiles = ['README.md', 'CHANGELOG.md', 'LICENSE']
+const copyFiles = ['README.md', 'PiAPIs.md', 'CHANGELOG.md', 'LICENSE']
 
 const cleanPkg = () => {
   delete pkg.scripts
