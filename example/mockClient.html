@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mock client</title>
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    main {
+      width: 100vw;
+      height: 34vh;
+
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+    }
+
+    main>div {
+      width: 140px;
+      height: 90px;
+      background: greenyellow;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      word-break: break-all;
+      cursor: pointer;
+    }
+
+    #frame {
+      width: 100vw;
+      height: 65vh;
+      background: yellowgreen;
+    }
+  </style>
+  <script src="/mockData.js"></script>
+</head>
+
+<body>
+
+  <main id="clientObjects">
+
+  </main>
+
+  <iframe id="frame" src="/index.html" frameborder="0"></iframe>
+
+
+  <script>
+    const $frame = document.getElementById('frame')
+    let $frameWin
+    let $ueInterface
+    const log = (msg, ...args) => {
+      // const time = new Date().toLocaleString()
+
+      // console.log(`=> [${time}] ${msg}`, ...args)
+      console.log(`%c=> [MockClient] ${msg}`, 'color:#e643b2', ...args)
+    }
+    const u2j = (param) => {
+      log(`client send: `, param)
+      $ueInterface().__PiClientEvent(param)
+    }
+
+    function eventHandler(param) {
+      if (typeof param === 'string') param = JSON.parse(param)
+
+
+      const cbParam = {
+        action: param.action,
+        success: true
+      }
+
+      if (param.action === 'page.loadCompleted') {
+        cbParam.params = baseDb
+
+        // u2j(baseDb, log)
+        // u2j(worldObjects, log)
+      }
+
+      u2j(cbParam, log)
+
+      if (param.callbackAction) {
+        u2j({
+          action: param.callbackAction,
+          target: param.target,
+          params: {}
+        })
+      }
+    }
+
+    function initMock() {
+      $frameWin = $frame.contentWindow
+
+      const ueInterface = {
+        broadcast(fn, param) {
+          log(`from PiClientJS: `, param)
+
+          eventHandler(param)
+        },
+      }
+
+      function initInterface() {
+        $frameWin.ue = { interface: ueInterface }
+        $ueInterface = () => $frameWin.ue.interface
+      }
+      setTimeout(() => {
+        if (!$frameWin.ue) initInterface()
+      }, 100)
+      initInterface()
+
+      log('mock client ready!')
+    }
+
+    initMock()
+  </script>
+
+  <script>
+    const $clientObjs = document.getElementById('clientObjects')
+
+    baseDb.worldObjects.forEach(i => {
+      const obj = document.createElement('div')
+      obj.innerText = i.displayName
+      obj.setAttribute('data-id', i.name)
+
+      $clientObjs.appendChild(obj)
+    })
+
+    $clientObjs.addEventListener('click', (ev) => {
+      const { target } = ev
+      const id = target.dataset?.id
+      if (!id) return
+      // console.log('===obj click: ', id);
+
+      u2j({ action: 'objectClick', target: id, params: { objects: [id] } })
+    })
+  </script>
+</body>
+
+</html>

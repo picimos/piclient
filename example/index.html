@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>piclient.js example</title>
+  <script src="/index.umd.js"></script>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main>
+    <form action="">
+      <label for="action">
+        <span>action: </span>
+        <input name="action" id="action" required />
+      </label>
+      <label for="target">
+        <span>target?: </span>
+        <input name="target" id="target" />
+      </label>
+      <label for="callback">
+        <span>callback?: </span>
+        <input type="checkbox" name="callback" id="callback" />
+      </label>
+      <label for="params">
+        <span>params?: </span>
+        <textarea name="params" id="params" cols="24" rows="8"></textarea>
+      </label>
+      <button type="button" onclick="onSubmit()">发送</button>
+    </form>
+  </main>
+
+  <script>
+    var piclient = new PiClientJS.PiClient({ debug: true })
+    piclient.pageReady().then((res) => {
+      console.log('===> page ready.', res);
+
+    }).catch(e => {
+      console.log('ready error: ', e)
+    })
+
+    piclient.emit('mode.enterEditMode')
+
+    piclient.on('objectClick', 'SceneMeshObject_0', (res) => {
+      console.log('===>客户端对象被点击了', res);
+    })
+
+    function onSubmit() {
+      const form = document.forms[0]
+
+      if (!form.reportValidity()) return false
+
+      const action = form.action.value
+      const target = form.target.value
+      const callback = form.callback.checked
+      const params = form.params.value
+      // console.log(`====submit: ${action},${target},${callback},${params}`);
+
+      if (callback)
+        piclient.emit(action, { target, params }, (cbParam) => { })
+      else
+        piclient.emit(action, { target, params })
+    }
+  </script>
+</body>
+
+</html>
