@@ -11,6 +11,12 @@ import {
   PiClientOptions,
   TempCallbackFns,
 } from './types'
+import {
+  CloudrenderIns,
+  CloudrenderOptions,
+  PiCloudrenderIns,
+} from './types/cloudrender'
+import { useCloudrender } from './useCloudrender'
 import { camelCase, log, logErr } from './utils'
 
 const defaultOptions: PiClientOptions = {
@@ -46,7 +52,89 @@ class PiClient implements PiClientBaseDatas {
   actions: [] = []
   globalObjects: [] = []
   worldObjects: [] = []
+  private _setBaseDb(param: PiClientCallbackParams) {
+    const { params } = param || {}
+
+    this.classes = params.classes
+    this.classEvents = params.classEvents
+    this.actions = params.actions
+    this.globalObjects = params.globalObjects
+    this.worldObjects = params.worldObjects
+  }
   //#endregion
+
+  private _cloudrenderIns = {} as CloudrenderIns
+  protected cloudrender: PiCloudrenderIns = {
+    address: '',
+    appKey: '',
+    $el: undefined,
+    enabled: false,
+    destroy: () => {
+      this.cloudrender.enabled = false
+
+      this._cloudrenderIns.destroy?.()
+
+      this.cloudrender.$el?.firstChild?.remove()
+    },
+    init: async (options) => {
+      if (!options) {
+        logErr('Missing [options].')
+        return
+      }
+
+      const {
+        $el,
+        address,
+        appKey,
+        readyCB,
+        disconnectCB,
+        onProgress,
+        report,
+        ...projectParam
+      } = options
+
+      if (!address || !appKey) {
+        logErr('Missing required parameters: address, appKey.')
+        return
+      }
+
+      this.cloudrender.address = address
+      this.cloudrender.appKey = appKey
+      this.cloudrender.$el = $el
+
+      options.readyCB = () => {
+        this.cloudrender.enabled = true
+
+        this.emit('cloud.init', projectParam, (cbParam) => {
+          this._setBaseDb(cbParam)
+
+          readyCB?.(cbParam.params)
+        }).catch((msg) => logErr('cloud.init error: ' + msg))
+      }
+
+      options.disconnectCB = (msg) => {
+        this.cloudrender.destroy()
+
+        disconnectCB?.(msg)
+      }
+
+      const ins = useCloudrender(options as CloudrenderOptions)
+      await ins.init()
+
+      this._cloudrenderIns = ins
+
+      ins.onMessage((msg) => {
+        try {
+          const params = JSON.parse(msg as string)
+          this.onMessage(params)
+        } catch (err) {
+          logErr(`onMessage error [${msg}]: `, err)
+        }
+      })
+
+      return this.cloudrender
+    },
+  }
 
   constructor(options: PiClientOptions = defaultOptions) {
     log(`version[${this._v}].`)
@@ -155,13 +243,18 @@ class PiClient implements PiClientBaseDatas {
     param: K extends ActionName ? Actions[K] : DynamicActions[K],
     callback?: PiClientCallbackFn,
   ) {
+    // 未在客户端且未开启云渲染
+    if (!this._inClient && !this.cloudrender.enabled) {
+      logErr('Not in the client of PiCIMOS. Nor cloudrender enabled.')
+
+      return
+    }
+
     const { target, ...params } = param || ({} as any)
     const defaultTarget = target || DEFAULT_TARGET
 
     if (this._opts.debug)
       log(`👆emit event[${action}]: ${target || 'unknow target'}`, param)
-
-    if (!this._inClient) return Promise.reject('Not in the client of PiCIMOS.')
 
     const j2cParams: PiClientEventParams<ActionName> = {
       action,
@@ -191,7 +284,9 @@ class PiClient implements PiClientBaseDatas {
         }
       })
 
-      this._ins.broadcast('', j2cParams)
+      if (!this._inClient && this.cloudrender.enabled)
+        this._cloudrenderIns.emit(encodeURIComponent(JSON.stringify(j2cParams)))
+      else this._ins.broadcast('', j2cParams)
     })
   }
 
@@ -202,15 +297,9 @@ class PiClient implements PiClientBaseDatas {
     if (!this._connected) this.connect()
 
     return this.emit('page.loadCompleted').then((param) => {
-      const { params } = param || {}
+      this._setBaseDb(param)
 
-      this.classes = params.classes
-      this.classEvents = params.classEvents
-      this.actions = params.actions
-      this.globalObjects = params.globalObjects
-      this.worldObjects = params.worldObjects
-
-      return params as PiClientBaseDatas
+      return param.params as PiClientBaseDatas
     })
   }
 }
