@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>piclient.js example</title>
+  <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/react.production.min.js"></script>
+  <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/react-dom.production.min.js"></script>
+  <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/react-is.production.min.js"></script>
+  <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/rxjs.umd.min.js"></script>
+  <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/styled-components.min.js"></script>
+  <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/base64.min.js"></script>
+  <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/qs.min.js"></script>
+  <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/ResizeObserver.min.js"></script>
+  <script
+    src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/ray-streaming/2.12.0/ray-streaming.min.js"></script>
+  <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/live-cat/0.5.1/live-cat.min.js"></script>
+  <script src="/index.umd.js"></script>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      width: 100vw;
+      height: 90vh;
+      position: relative;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button onclick="destroy()">销毁</button>
+  <button onclick="connect()">连接</button>
+  <button onclick="toggleUI()">切换界面UI</button>
+  <button onclick="togglePlay()">退出编辑</button>
+  <a href="/mockClient.html">返回</a>
+
+
+  <main id="container"></main>
+
+  <script>
+    var piclient = new PiClientJS.PiClient({ debug: true })
+
+    let connected = false
+    function destroy() {
+      connected = false
+      piclient.cloudrender.destroy()
+    }
+    function connect() {
+      if (connected)
+        piclient.cloudrender.destroy()
+
+      piclient.cloudrender.init({
+        $el: document.getElementById('container'),
+        address: "http://192.168.2.129:8088",
+        appKey: "IKExVbI6LBDpTXdU",
+
+        token: '',
+        editorMode: false,
+        projectId: "Pu85negwwa7oi",
+        showUI: false,
+
+
+        readyCB(baseDb) {
+          connected = true
+          console.log('===>readyyyy', baseDb)
+          console.log('===>', piclient.classEvents);
+        },
+
+        disconnectCB(msg) {
+          console.log('===>断开了：', msg)
+
+          destroy()
+        },
+
+        report(param) {
+          console.log('===>report:', param);
+        },
+      }).then(res => {
+        console.log('===inited:', res);
+      })
+    }
+
+    function toggleUI() {
+      if (!connected) return alert('未连接')
+
+      piclient.emit('ui.setClientUIVisible', { visible: 'toggle' })
+      piclient.emit('mode.enterEditMode')
+    }
+    function togglePlay() {
+      if (!connected) return alert('未连接')
+
+      piclient.emit('mode.enterPlayMode')
+    }
+
+  </script>
+</body>
+
+</html>

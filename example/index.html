@@ -52,7 +52,7 @@
       console.log('===> page ready.', res);
 
     }).catch(e => {
-      console.log('ready error: ', e)
+      console.error('ready error: ', e)
     })
 
     piclient.emit('mode.enterEditMode')
@@ -69,13 +69,13 @@
       const action = form.action.value
       const target = form.target.value
       const callback = form.callback.checked
-      const params = form.params.value
+      const param = form.params.value
       // console.log(`====submit: ${action},${target},${callback},${params}`);
 
       if (callback)
-        piclient.emit(action, { target, params }, (cbParam) => { })
+        piclient.emit(action, { target, param }, (cbParam) => { })
       else
-        piclient.emit(action, { target, params })
+        piclient.emit(action, { target, param })
     }
   </script>
 </body>
