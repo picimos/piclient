@@ -15,13 +15,13 @@ interface CloudrenderReport {
 }
 
 export interface CloudrenderIns {
-  init: () => Promise<void>
+  init(): Promise<void>
   /**
    * 销毁云渲染实例
    */
-  destroy: () => void
-  emit: (msg: string) => Promise<boolean>
-  onMessage: (listener: Listener<string | ArrayBuffer>) => Disposable
+  destroy(): void
+  emit(msg: string): Promise<boolean>
+  onMessage(listener: Listener<string | ArrayBuffer>): Disposable
 }
 
 export type DisconnectMsg = '连接中断' | '信令断开' | '超时断开'
@@ -42,23 +42,23 @@ export interface CloudrenderOptions {
   /**
    * 云渲染准备完成的回调
    */
-  readyCB?: () => void
+  readyCB?(): void
   /**
    * 云渲染断开连接的回调
    * @param msg 连接断开的说明
    */
-  disconnectCB?: (msg: DisconnectMsg) => void
+  disconnectCB?(msg: DisconnectMsg): void
   /**
    * 监听云渲染连接进度
    * @param percent 进度值, 0-100
    */
-  onProgress?: (percent: number) => void
+  onProgress?(percent: number): void
 
   /**
    * 实时连接状态反馈
    * @param state `CloudrenderReport`
    */
-  report?: (state: CloudrenderReport) => void
+  report?(state: CloudrenderReport): void
 }
 
 /**
@@ -71,7 +71,7 @@ export interface PiCloudrenderOptions
    * 云渲染准备完成的回调
    * @param baseDb `PiClientBaseDatas`
    */
-  readyCB?: (baseDb: PiClientBaseDatas) => void
+  readyCB?(baseDb: PiClientBaseDatas): void
 }
 
 export interface PiCloudrenderIns
@@ -83,6 +83,7 @@ export interface PiCloudrenderIns
   enabled: boolean
   /**
    * 初始化云渲染
+   * @param options 云渲染参数及初始项目参数
    */
-  init: (options: PiCloudrenderOptions) => Promise<PiCloudrenderIns | undefined>
+  init(options: PiCloudrenderOptions): Promise<PiCloudrenderIns | undefined>
 }

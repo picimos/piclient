@@ -64,7 +64,7 @@ class PiClient implements PiClientBaseDatas {
   //#endregion
 
   private _cloudrenderIns = {} as CloudrenderIns
-  protected cloudrender: PiCloudrenderIns = {
+  cloudrender: PiCloudrenderIns = {
     address: '',
     appKey: '',
     $el: undefined,
