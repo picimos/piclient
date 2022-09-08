@@ -21,7 +21,7 @@ const banner = ''
 const isProd = process.env.NODE_ENV === 'production'
 
 const envPlugins = isProd
-  ? []
+  ? [terser(), buildPlugin()]
   : [
       serve({
         open: true,
@@ -32,6 +32,10 @@ const envPlugins = isProd
       }),
     ]
 
+const externals = {
+  'live-cat': 'LiveCat',
+}
+
 const config = [
   {
     // 项目入口
@@ -41,7 +45,13 @@ const config = [
     output: [
       { file: pkg.main, format: 'cjs', banner },
       { file: pkg.module, format: 'es', banner },
-      { file: pkg.browser, format: 'umd', name: 'PiClientJS', banner },
+      {
+        file: pkg.browser,
+        format: 'umd',
+        name: 'PiClientJS',
+        banner,
+        globals: externals,
+      },
     ],
 
     // 使用的插件
@@ -51,10 +61,11 @@ const config = [
       typescript({
         tsconfig: resolvePath('./tsconfig.json'),
       }),
-      terser(),
-      buildPlugin(),
+
       ...envPlugins,
     ],
+
+    external: Object.keys(externals),
   },
   // 生成类型声明文件
   {
