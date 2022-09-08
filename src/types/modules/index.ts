@@ -1,11 +1,13 @@
 import { ModuleUiActions } from './ui'
 import { ModuleModeActions } from './mode'
 import { ModuleGeneralActions } from './general'
+import { ModuleCloudActions } from './cloud'
 
 export interface Actions
   extends ModuleUiActions,
     ModuleModeActions,
-    ModuleGeneralActions {}
+    ModuleGeneralActions,
+    ModuleCloudActions {}
 
 export interface DynamicActions extends Actions {
   [action: string]: any
