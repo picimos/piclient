@@ -151,7 +151,7 @@ class PiClient implements PiClientBaseDatas {
    * 与客户端建立通信
    * @returns 是否连接成功
    */
-  connect(): boolean {
+  private connect(): boolean {
     if (!this._inClient) return false
 
     // 注入回调入口
