@@ -96,3 +96,4 @@ export interface TempCallbackFns {
 }
 
 export * from './modules'
+export * from './cloudrender'
