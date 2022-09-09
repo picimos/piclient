@@ -173,11 +173,11 @@ class PiClient implements PiClientBaseDatas {
     if (this._opts.debug)
       log(`👉onMessage event[${action}]: ${target || 'unknow target'}`, params)
 
-    const cbs = this._cbs[action]?.[target || DEFAULT_TARGET]
+    const fixTarget = target || DEFAULT_TARGET
+    const cbs = this._cbs[action]?.[fixTarget]
     if (cbs) cbs.forEach((i) => i(param))
 
-    const fixOnceTarget = target + ONCE_TARGET_SUFFIX
-    const onceCbs = this._cbs[action]?.[fixOnceTarget]
+    const onceCbs = this._cbs[action]?.[fixTarget + ONCE_TARGET_SUFFIX]
     if (onceCbs) onceCbs.forEach((i) => i(param))
   }
 
@@ -225,7 +225,7 @@ class PiClient implements PiClientBaseDatas {
    * @param fn 客户端处理事件行为的回调函数
    */
   once(action: ActionName | string, target: string, fn: PiClientCallbackFn) {
-    const onceTarget = target + ONCE_TARGET_SUFFIX
+    const onceTarget = (target || DEFAULT_TARGET) + ONCE_TARGET_SUFFIX
     this.on(action, onceTarget, (param) => {
       this.off(action, onceTarget)
 
