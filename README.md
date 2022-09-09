@@ -1,31 +1,119 @@
 # piclient.js
 
 PiClient(Pronounced as: /paɪ ˈklaɪənt/) JS SDK.
+
 The JSBridge for the client of PiCIMOS.
 
----
-
-> ## 需在 PiCIMOS 客户端中运行.
+Alternatively you can use it to enable cloudrender to interact with PiCIMOS.
 
 ---
 
 ## Quick start
 
-```typescript
-import { PiClient } from 'piclient.js'
+### 🥇 在 PiCIMOS 客户端中运行.
 
-const piclient = new PiClient({ debug: true })
+- #### 直接用 `<script>` 引入
 
-/**
- * 页面加载完成时 需调用`pageReady`
- */
-piclient
-  .pageReady()
-  .then((baseDb: PiClientBaseDatas) => {
-    // 客户端场景对象加载完成
-  })
-  .catch((err) => {})
-```
+  直接下载或使用 CDN 链接通过 `<script>` 标签引入，将会注册一个 `PiClientJS` 全局变量。
+
+  ```html
+  <script src="https://cdn.jsdelivr.net/npm/piclient.js@latest/index.umd.js"></script>
+  ```
+
+  ```html
+  <script>
+    const { PiClient } = PiClientJS
+  </script>
+  ```
+
+  如果你使用原生 ES Modules，这里也有一个兼容的构建文件：
+
+  ```html
+  <script type="module">
+    import { PiClient } from 'https://cdn.jsdelivr.net/npm/piclient.js@latest/index.esm.js'
+  </script>
+  ```
+
+- #### 使用构建工具
+
+  ```shell
+  $ npm install piclient.js
+  ```
+
+  ```typescript
+  import { PiClient } from 'piclient.js'
+  ```
+
+  #### **Usage**
+
+  ```typescript
+  const piclient = new PiClient({ debug: true })
+
+  /**
+   * 页面加载完成时 需调用`pageReady`
+   */
+  await piclient
+    .pageReady()
+    .then((baseDb: PiClientBaseDatas) => {
+      // 客户端场景对象加载完成
+    })
+    .catch((err) => {})
+
+  // 与客户端交互...
+  ```
+
+### 🥈 在浏览器中使用云渲染加载 PiCIMOS 客户端.
+
+- #### 直接用 `<script>` 引入
+
+  同上。但需前置引入云渲染工具相关依赖，参考[这里](https://www.3dcat.live/support/api/browser-link.html)(2、浏览器直接接入代码参考)。
+
+  ```html
+  <!-- 前置依赖引入 -->
+  <!-- ... -->
+  <script src="https://cdn.jsdelivr.net/npm/piclient.js@latest/index.umd.js"></script>
+  ```
+
+  ```html
+  <script>
+    const { PiClient } = PiClientJS
+  </script>
+  ```
+
+  _注：使用云渲染不支持原生 ES Modules 引入方式。_
+
+- #### 使用构建工具
+
+  同上。
+
+  #### **Usage**
+
+  ```typescript
+  const piclient = new PiClient({ debug: true })
+
+  const initOptions: PiCloudrenderOptions = {
+    // $el: document.body, // 初始化时确保挂载的元素已存在
+    address: 'httpxxx',
+    appKey: 'xxx',
+
+    token: '',
+    projectId: 'xxx',
+
+    // ...
+  }
+
+  // 初始化云渲染
+  await piclient.cloudrender
+    .init(initOptions)
+    .then((baseDb: PiClientBaseDatas) => {
+      // 客户端场景对象加载完成
+    })
+    .catch((err) => {
+      // 初始化异常 或 云渲染连接断开
+    })
+
+  // 与客户端交互...
+  ```
 
 ## 事件交互
 
@@ -94,6 +182,21 @@ piclient
   // (meshChange)         模型变更
   // (materialChange)     材质变更
   // ...
+  ```
+
+- `once` 绑定仅监听一次事件行为
+
+  同 `on`，但仅会触发一次
+
+  ```typescript
+  piclient.once(action, target, fn) => void
+
+  //--- 调用示例 ---
+
+  // 监听一次客户端对象点击
+  piclient.once('objectClick', 'SceneMeshObject_0', (res) => {
+    // 对象 SceneMeshObject_0 被点击了，再点击这里就进不来了
+  })
   ```
 
 - `off` 解绑监听事件行为
