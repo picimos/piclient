@@ -60,6 +60,9 @@
     piclient.on('objectClick', 'SceneMeshObject_0', (res) => {
       console.log('===>客户端对象被点击了', res);
     })
+    piclient.once('objectClick', 'SceneMeshObject_0', (res) => {
+      console.log('===>监听一次的客户端对象被点击了', res);
+    })
 
     function onSubmit() {
       const form = document.forms[0]
