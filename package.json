@@ -18,7 +18,6 @@
     "prepare": "yarn build",
     "preversion": "yarn lint",
     "version": "yarn format",
-    "remove!": "npm --force unpublish piclient.js",
     "pub": "npm run build && cd ./lib && npm publish && cd .."
   },
   "keywords": [
@@ -28,11 +27,13 @@
     "PiAdmin"
   ],
   "license": "MIT",
+  "dependencies": {
+    "live-cat": "^0.5.1"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-json": "^4.1.0",
     "cross-env": "^7.0.3",
-    "live-cat": "^0.5.1",
     "prettier": "^2.7.1",
     "rollup": "^2.78.0",
     "rollup-plugin-dts": "^4.2.2",
