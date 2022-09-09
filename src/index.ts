@@ -119,12 +119,12 @@ class PiClient implements PiClientBaseDatas {
         disconnectCB?.(msg)
       }
 
-      const ins = useCloudrender(options as CloudrenderOptions)
+      const ins = await useCloudrender(options as CloudrenderOptions)
       await ins.init()
 
       this._cloudrenderIns = ins
 
-      ins.onMessage((msg) => {
+      ins.onMessage((msg: any) => {
         try {
           const params = JSON.parse(msg as string)
           this.onMessage(params)

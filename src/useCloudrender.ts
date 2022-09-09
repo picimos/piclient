@@ -4,7 +4,7 @@ import { CloudrenderIns, CloudrenderOptions, DisconnectMsg } from './types'
 
 const PUBLIC_CLOUD_ADDRESS = 'https://app.3dcat.live'
 
-export function useCloudrender(options: CloudrenderOptions) {
+export async function useCloudrender(options: CloudrenderOptions) {
   let launcher: Launcher | LauncherPrivate | null
   let player: LivePlayer | null
   let connection: Connection | null
@@ -35,13 +35,13 @@ export function useCloudrender(options: CloudrenderOptions) {
     clearInterval(reportTimer)
   }
 
-  // const { Launcher: pubLauncher, LauncherPrivate: privateLauncher } =
-  //   await import('live-cat')
+  const { Launcher: pubLauncher, LauncherPrivate: privateLauncher } =
+    await import('live-cat')
 
   const init = async () => {
     try {
       onProgress?.(20)
-      launcher = new (isPub ? Launcher : LauncherPrivate)({
+      launcher = new (isPub ? pubLauncher : privateLauncher)({
         baseOptions: {
           address,
           appKey,
