@@ -79,6 +79,10 @@ class PiClient implements PiClientBaseDatas {
       this.cloudrender.$el?.firstChild?.remove()
     },
     init: (options) => {
+      if (this._inClient) {
+        return Promise.reject('Do not enable cloudrender in the client.')
+      }
+
       if (!options) return Promise.reject('Missing [options].')
 
       const { $el, address, appKey, onProgress, report, ...projectParam } =
@@ -209,7 +213,7 @@ class PiClient implements PiClientBaseDatas {
   }
 
   /**
-   * 绑定仅监听一次的事件行为
+   * 绑定仅监听一次事件行为
    * @param action 事件行为名
    * @param target 可选，触发目标对象name
    * @param fn 客户端处理事件行为的回调函数
