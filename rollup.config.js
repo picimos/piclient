@@ -37,6 +37,16 @@ const envPlugins = isProd
       }),
     ]
 
+const commonPlugins = [
+  json(),
+  commonjs(),
+  typescript({
+    tsconfig: resolvePath('./tsconfig.json'),
+  }),
+
+  ...envPlugins,
+]
+
 const config = [
   {
     // 项目入口
@@ -46,20 +56,20 @@ const config = [
     output: [
       { file: pkg.main, format: 'cjs', banner },
       { file: pkg.module, format: 'es', banner },
-      { file: pkg.browser, format: 'umd', name: 'PiClientJS', banner },
     ],
 
     // 使用的插件
-    plugins: [
-      json(),
-      commonjs(),
-      typescript({
-        tsconfig: resolvePath('./tsconfig.json'),
-      }),
-      externalGlobals(externals),
+    plugins: commonPlugins,
+  },
+  {
+    // 项目入口
+    input: 'src/index.ts',
 
-      ...envPlugins,
-    ],
+    // 打包后的出口和设置
+    output: [{ file: pkg.browser, format: 'umd', name: 'PiClientJS', banner }],
+
+    // 使用的插件
+    plugins: [...commonPlugins, externalGlobals(externals)],
 
     external: Object.keys(externals),
   },
