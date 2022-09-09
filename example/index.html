@@ -46,6 +46,13 @@
     </form>
   </main>
 
+  <script type="module">
+    import { PiClient } from 'http://localhost:34666/index.esm.js'
+    const piclientES = new PiClient({ debug: true })
+    console.log('-----esmodule:', piclientES._v)
+
+  </script>
+
   <script>
     var piclient = new PiClientJS.PiClient({ debug: true })
     piclient.pageReady().then((res) => {

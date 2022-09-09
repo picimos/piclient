@@ -46,9 +46,37 @@
   <main id="container"></main>
 
   <script>
+    let connected = false
+    const initConfig = {
+      $el: document.getElementById('container'),
+      address: "http://192.168.2.129:8088",
+      appKey: "IKExVbI6LBDpTXdU",
+
+      token: '',
+      editorMode: false,
+      projectId: "Pu85negwwa7oi",
+      showUI: false,
+
+
+      readyCB(baseDb) {
+        connected = true
+        console.log('===>readyyyy', baseDb)
+        console.log('===>', piclient.classEvents);
+      },
+
+      disconnectCB(msg) {
+        console.log('===>断开了：', msg)
+
+        destroy()
+      },
+
+      report(param) {
+        console.log('===>report:', param);
+      },
+    }
+
     var piclient = new PiClientJS.PiClient({ debug: true })
 
-    let connected = false
     function destroy() {
       connected = false
       piclient.cloudrender.destroy()
@@ -57,33 +85,7 @@
       if (connected)
         piclient.cloudrender.destroy()
 
-      piclient.cloudrender.init({
-        $el: document.getElementById('container'),
-        address: "http://192.168.2.129:8088",
-        appKey: "IKExVbI6LBDpTXdU",
-
-        token: '',
-        editorMode: false,
-        projectId: "Pu85negwwa7oi",
-        showUI: false,
-
-
-        readyCB(baseDb) {
-          connected = true
-          console.log('===>readyyyy', baseDb)
-          console.log('===>', piclient.classEvents);
-        },
-
-        disconnectCB(msg) {
-          console.log('===>断开了：', msg)
-
-          destroy()
-        },
-
-        report(param) {
-          console.log('===>report:', param);
-        },
-      }).then(res => {
+      piclient.cloudrender.init(initConfig).then(res => {
         console.log('===inited:', res);
       })
     }
@@ -100,6 +102,13 @@
       piclient.emit('mode.enterPlayMode')
     }
 
+  </script>
+  <script type="module">
+    import { PiClient } from 'http://localhost:34666/index.esm.js'
+    piclient = new PiClient({ debug: true })
+    console.log('-----esmodule:', piclient._v)
+
+    piclient.cloudrender.init(initConfig)
   </script>
 </body>
 
