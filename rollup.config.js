@@ -5,6 +5,7 @@ const { terser } = require('rollup-plugin-terser')
 const typescript = require('rollup-plugin-typescript2')
 import dts from 'rollup-plugin-dts'
 import serve from 'rollup-plugin-serve'
+import externalGlobals from 'rollup-plugin-external-globals'
 const pkg = require('./package.json')
 const buildPlugin = require('./build')
 
@@ -20,6 +21,10 @@ const banner = ''
 
 const isProd = process.env.NODE_ENV === 'production'
 
+const externals = {
+  'live-cat': 'LiveCat',
+}
+
 const envPlugins = isProd
   ? [terser(), buildPlugin()]
   : [
@@ -32,10 +37,6 @@ const envPlugins = isProd
       }),
     ]
 
-const externals = {
-  'live-cat': 'LiveCat',
-}
-
 const config = [
   {
     // 项目入口
@@ -45,13 +46,7 @@ const config = [
     output: [
       { file: pkg.main, format: 'cjs', banner },
       { file: pkg.module, format: 'es', banner },
-      {
-        file: pkg.browser,
-        format: 'umd',
-        name: 'PiClientJS',
-        banner,
-        globals: externals,
-      },
+      { file: pkg.browser, format: 'umd', name: 'PiClientJS', banner },
     ],
 
     // 使用的插件
@@ -61,6 +56,7 @@ const config = [
       typescript({
         tsconfig: resolvePath('./tsconfig.json'),
       }),
+      externalGlobals(externals),
 
       ...envPlugins,
     ],
