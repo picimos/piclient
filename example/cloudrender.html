@@ -66,19 +66,6 @@
       projectId: "Pu85negwwa7oi",
       showUI: false,
 
-
-      readyCB(baseDb) {
-        connected = true
-        console.log('===>readyyyy', baseDb)
-        console.log('===>', piclient.classEvents);
-      },
-
-      disconnectCB(msg) {
-        console.log('===>断开了：', msg)
-
-        destroy()
-      },
-
       report(param) {
         console.log('===>report:', param);
       },
@@ -94,8 +81,12 @@
       if (connected)
         piclient.cloudrender.destroy()
 
-      piclient.cloudrender.init(initConfig).then(res => {
-        console.log('===inited:', res);
+      piclient.cloudrender.init(initConfig).then(baseDb => {
+        connected = true
+        console.log('===>readyyyy', baseDb)
+        console.log('===>', piclient.classEvents);
+      }).catch(err => {
+        console.error('===>断开了：', err)
       })
     }
 
