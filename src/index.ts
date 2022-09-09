@@ -15,6 +15,7 @@ import {
   CloudrenderIns,
   CloudrenderOptions,
   PiCloudrenderIns,
+  PiCloudrenderOptions,
 } from './types/cloudrender'
 import { useCloudrender } from './useCloudrender'
 import { camelCase, log, logErr } from './utils'
@@ -324,4 +325,5 @@ export {
   PiClientCallbackFn,
   PiClientCallbackParams,
   PiClientOptions,
+  PiCloudrenderOptions,
 }
