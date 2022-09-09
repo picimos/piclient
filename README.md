@@ -220,3 +220,7 @@ Alternatively you can use it to enable cloudrender to interact with PiCIMOS.
 ---
 
 > ## [更新日志](https://github.com/ioolllzzzz/piclient.js/blob/main/CHANGELOG.md)
+
+---
+
+> ## 问题反馈 [New Issues](https://github.com/ioolllzzzz/piclient.js/issues/new)
