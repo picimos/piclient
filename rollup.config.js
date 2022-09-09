@@ -1,15 +1,15 @@
-const path = require('path')
+const { resolve, join } = require('path')
 const commonjs = require('@rollup/plugin-commonjs')
 const json = require('@rollup/plugin-json')
-const { terser } = require('rollup-plugin-terser')
+const dts = require('rollup-plugin-dts').default
+const serve = require('rollup-plugin-serve')
 const typescript = require('rollup-plugin-typescript2')
-import dts from 'rollup-plugin-dts'
-import serve from 'rollup-plugin-serve'
-import externalGlobals from 'rollup-plugin-external-globals'
+const { terser } = require('rollup-plugin-terser')
 const pkg = require('./package.json')
 const buildPlugin = require('./build')
+const { pluginDynamicImports } = require('./build/utils')
 
-const resolvePath = (...paths) => path.resolve(__dirname, ...paths)
+const resolvePath = (...paths) => resolve(__dirname, ...paths)
 
 const banner = ''
 // '/*!\n' +
@@ -66,10 +66,21 @@ const config = [
     input: 'src/index.ts',
 
     // 打包后的出口和设置
-    output: [{ file: pkg.browser, format: 'umd', name: 'PiClientJS', banner }],
+    output: {
+      file: pkg.browser,
+      format: 'umd',
+      name: 'PiClientJS',
+      banner,
+      globals: externals,
+    },
 
     // 使用的插件
-    plugins: [...commonPlugins, externalGlobals(externals)],
+    plugins: [
+      ...commonPlugins,
+      pluginDynamicImports({
+        globals: externals,
+      }),
+    ],
 
     external: Object.keys(externals),
   },
@@ -78,7 +89,7 @@ const config = [
     input: 'src/index.ts',
     output: [
       {
-        file: path.join(resolvePath(pkg.types), 'index.d.ts'),
+        file: join(resolvePath(pkg.types), 'index.d.ts'),
         format: 'es',
       },
     ],
