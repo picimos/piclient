@@ -19,6 +19,15 @@
   <script src="https://3dcat-cms-img.oss-cn-shenzhen.aliyuncs.com/script/live-cat/0.5.1/live-cat.min.js"></script>
   <script src="/index.umd.js"></script>
 
+  <!-- <script type="importmap">
+    {
+      "imports":{
+        "live-cat": "https://cdn.jsdelivr.net/npm/live-cat@0.5.1/live-cat.esm.js",
+        "piclient.js": "http://localhost:34666/index.esm.js"
+      }
+    }
+  </script> -->
+
   <style>
     html,
     body {
@@ -103,13 +112,13 @@
     }
 
   </script>
-  <script type="module">
-    import { PiClient } from 'http://localhost:34666/index.esm.js'
+  <!-- <script type="module">
+    import { PiClient } from 'piclient.js'
     piclient = new PiClient({ debug: true })
     console.log('-----esmodule:', piclient._v)
 
     piclient.cloudrender.init(initConfig)
-  </script>
+  </script> -->
 </body>
 
 </html>
