@@ -25,6 +25,7 @@ const defaultOptions: PiClientOptions = {
 
 const CLIENT_CALLBACK_NAME = '__PiClientEvent'
 const DEFAULT_TARGET = ''
+const ONCE_TARGET_SUFFIX = '.once'
 
 let COUNTER = 0
 class PiClient implements PiClientBaseDatas {
@@ -173,8 +174,11 @@ class PiClient implements PiClientBaseDatas {
       log(`👉onMessage event[${action}]: ${target || 'unknow target'}`, params)
 
     const cbs = this._cbs[action]?.[target || DEFAULT_TARGET]
-
     if (cbs) cbs.forEach((i) => i(param))
+
+    const fixOnceTarget = target + ONCE_TARGET_SUFFIX
+    const onceCbs = this._cbs[action]?.[fixOnceTarget]
+    if (onceCbs) onceCbs.forEach((i) => i(param))
   }
 
   /**
@@ -212,6 +216,21 @@ class PiClient implements PiClientBaseDatas {
     }
 
     return false
+  }
+
+  /**
+   * 绑定仅监听一次的事件行为
+   * @param action 事件行为名
+   * @param target 可选，触发目标对象name
+   * @param fn 客户端处理事件行为的回调函数
+   */
+  once(action: ActionName | string, target: string, fn: PiClientCallbackFn) {
+    const onceTarget = target + ONCE_TARGET_SUFFIX
+    this.on(action, onceTarget, (param) => {
+      this.off(action, onceTarget)
+
+      fn(param)
+    })
   }
 
   /**
@@ -266,17 +285,11 @@ class PiClient implements PiClientBaseDatas {
       const cbName = camelCase(`${action}.cb${++COUNTER}`)
       j2cParams.callbackAction = cbName
 
-      this.on(cbName, '', (cbParam: PiClientCallbackParams) => {
-        this.off(cbName, '')
-
-        callback(cbParam)
-      })
+      this.once(cbName, '', callback)
     }
 
     return new Promise((resolve, reject) => {
-      this.on(action, defaultTarget, (cbParams) => {
-        this.off(action, defaultTarget)
-
+      this.once(action, defaultTarget, (cbParams) => {
         if (cbParams.success) {
           resolve(cbParams)
         } else {
