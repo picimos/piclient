@@ -78,63 +78,52 @@ class PiClient implements PiClientBaseDatas {
 
       this.cloudrender.$el?.firstChild?.remove()
     },
-    init: async (options) => {
-      if (!options) {
-        logErr('Missing [options].')
-        return
-      }
+    init: (options) => {
+      if (!options) return Promise.reject('Missing [options].')
 
-      const {
-        $el,
-        address,
-        appKey,
-        readyCB,
-        disconnectCB,
-        onProgress,
-        report,
-        ...projectParam
-      } = options
+      const { $el, address, appKey, onProgress, report, ...projectParam } =
+        options
 
-      if (!address || !appKey) {
-        logErr('Missing required parameters: address, appKey.')
-        return
-      }
+      if (!address || !appKey)
+        return Promise.reject('Missing required parameters: address, appKey.')
 
       this.cloudrender.address = address
       this.cloudrender.appKey = appKey
       this.cloudrender.$el = $el
 
-      options.readyCB = () => {
-        this.cloudrender.enabled = true
+      return new Promise(async (resove, reject) => {
+        const readyCB = () => {
+          this.cloudrender.enabled = true
 
-        this.emit('cloud.init', projectParam, (cbParam) => {
-          this._setBaseDb(cbParam)
+          this.emit('cloud.init', projectParam, (cbParam) => {
+            this._setBaseDb(cbParam)
 
-          readyCB?.(cbParam.params)
-        }).catch((msg) => logErr('cloud.init error: ' + msg))
-      }
-
-      options.disconnectCB = (msg) => {
-        this.cloudrender.destroy()
-
-        disconnectCB?.(msg)
-      }
-
-      const ins = await useCloudrender(options as CloudrenderOptions)
-      await ins.init()
-
-      this._cloudrenderIns = ins
-
-      ins.onMessage((msg: any) => {
-        try {
-          const params = JSON.parse(msg as string)
-          this.onMessage(params)
-        } catch (err) {
-          logErr(`onMessage error [${msg}]: `, err)
+            resove(cbParam.params)
+          }).catch((msg) => logErr('cloudrender init error: ' + msg))
         }
-      })
 
-      return this.cloudrender
+        // fix: Promise resolve后的reject会被销毁
+        const tempReject = reject
+        const disconnectCB = (msg: string) => {
+          this.cloudrender.destroy()
+
+          tempReject(msg)
+        }
+
+        const ins = await useCloudrender({ ...options, readyCB, disconnectCB })
+        await ins.init()
+
+        this._cloudrenderIns = ins
+
+        ins.onMessage((msg: any) => {
+          try {
+            const params = JSON.parse(msg as string)
+            this.onMessage(params)
+          } catch (err) {
+            logErr(`onMessage error [${msg}]: `, err)
+          }
+        })
+      })
     },
   }
 

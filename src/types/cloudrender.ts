@@ -65,14 +65,8 @@ export interface CloudrenderOptions {
  * 云渲染初始化配置
  */
 export interface PiCloudrenderOptions
-  extends Omit<CloudrenderOptions, 'readyCB'>,
-    ParamOfCloudInit {
-  /**
-   * 云渲染准备完成的回调
-   * @param baseDb `PiClientBaseDatas`
-   */
-  readyCB?(baseDb: PiClientBaseDatas): void
-}
+  extends Omit<CloudrenderOptions, 'readyCB' | 'disconnectCB'>,
+    ParamOfCloudInit {}
 
 export interface PiCloudrenderIns
   extends Pick<CloudrenderOptions, 'address' | 'appKey' | '$el'>,
@@ -85,5 +79,5 @@ export interface PiCloudrenderIns
    * 初始化云渲染
    * @param options 云渲染参数及初始项目参数
    */
-  init(options: PiCloudrenderOptions): Promise<PiCloudrenderIns | undefined>
+  init(options: PiCloudrenderOptions): Promise<PiClientBaseDatas | undefined>
 }
