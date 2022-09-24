@@ -70,9 +70,6 @@
     }
 
     function eventHandler(param) {
-      if (typeof param === 'string') param = JSON.parse(param)
-
-
       const cbParam = {
         action: param.action,
         success: true
@@ -101,6 +98,8 @@
 
       const ueInterface = {
         broadcast(fn, param) {
+          if (typeof param === 'string') param = JSON.parse(param)
+
           log(`from PiClientJS: `, param)
 
           eventHandler(param)
