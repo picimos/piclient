@@ -291,9 +291,10 @@ class PiClient implements PiClientBaseDatas {
         }
       })
 
+      const paramJson = JSON.stringify(j2cParams)
       if (!this._inClient && this.cloudrender.enabled)
-        this._cloudrenderIns.emit(encodeURIComponent(JSON.stringify(j2cParams)))
-      else this._ins.broadcast('', j2cParams)
+        this._cloudrenderIns.emit(encodeURIComponent(paramJson))
+      else this._ins.broadcast('mode.event', paramJson)
     })
   }
 

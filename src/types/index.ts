@@ -1,7 +1,7 @@
 import { ActionName, Actions } from './modules'
 
 export interface PiClientBridgeInterface {
-  broadcast(fn: string, params: PiClientEventParams<ActionName>): void
+  broadcast(fn: string, data: string): void
   [fn: string]: any
 }
 
