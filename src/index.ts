@@ -263,7 +263,7 @@ class PiClient implements PiClientBaseDatas {
       return
     }
 
-    const { target, ...params } = param || ({} as any)
+    const { target } = param || ({} as any)
     const defaultTarget = target || DEFAULT_TARGET
 
     if (this._opts.debug)
@@ -272,7 +272,7 @@ class PiClient implements PiClientBaseDatas {
     const j2cParams: PiClientEventParams<ActionName> = {
       action,
       target: defaultTarget,
-      params,
+      params: param,
     }
 
     if (callback && typeof callback === 'function') {
@@ -284,7 +284,7 @@ class PiClient implements PiClientBaseDatas {
 
     return new Promise((resolve, reject) => {
       this.once(action, defaultTarget, (cbParams) => {
-        if (cbParams.success) {
+        if (cbParams.success !== false) {
           resolve(cbParams)
         } else {
           reject(cbParams.msg || 'unknown client error.')
