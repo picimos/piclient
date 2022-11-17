@@ -164,14 +164,29 @@ class PiClient implements PiClientBaseDatas {
    */
   onMessage(param: PiClientCallbackParams) {
     const { action, target, params } = param || {}
+
+    const actionCbs = this._cbs[action]
+
     if (this._opts.debug)
-      log(`👉onMessage event[${action}]: ${target || 'unknow target'}`, params)
+      log(
+        `👉onMessage event[${action}]: ${target || 'unknow target'}`,
+        params,
+        !actionCbs ? 'no action callback' : '',
+      )
+
+    if (!actionCbs) return
 
     const fixTarget = target || DEFAULT_TARGET
-    const cbs = this._cbs[action]?.[fixTarget]
+    const cbs = actionCbs[fixTarget]
     if (cbs) cbs.forEach((i) => i(param))
 
-    const onceCbs = this._cbs[action]?.[fixTarget + ONCE_TARGET_SUFFIX]
+    // 缺省目标对象绑定监听时
+    if (fixTarget !== DEFAULT_TARGET) {
+      const defaultTargetCbs = actionCbs[DEFAULT_TARGET]
+      if (defaultTargetCbs) defaultTargetCbs.forEach((i) => i(param))
+    }
+
+    const onceCbs = actionCbs[fixTarget + ONCE_TARGET_SUFFIX]
     if (onceCbs) onceCbs.forEach((i) => i(param))
   }
 
@@ -301,10 +316,10 @@ class PiClient implements PiClientBaseDatas {
   /**
    * 页面初始加载完成的调用
    */
-  pageReady(): Promise<PiClientBaseDatas> {
+  pageReady(): Promise<PiClientBaseDatas> | undefined {
     if (!this._connected) this.connect()
 
-    return this.emit('page.loadCompleted').then((param) => {
+    return this.emit('page.loadCompleted')?.then((param) => {
       this._setBaseDb(param)
 
       return param.params as PiClientBaseDatas
