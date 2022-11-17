@@ -335,4 +335,5 @@ export {
   PiClientCallbackParams,
   PiClientOptions,
   PiCloudrenderOptions,
+  PiCloudrenderIns,
 }
