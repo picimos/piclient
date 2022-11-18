@@ -99,7 +99,7 @@ class PiClient implements PiClientBaseDatas {
         const readyCB = () => {
           this.cloudrender.enabled = true
 
-          this.emit('cloud.init', projectParam, (cbParam) => {
+          return this.emit('cloud.init', projectParam, (cbParam) => {
             this._setBaseDb(cbParam)
 
             resove(cbParam.params)
@@ -114,19 +114,32 @@ class PiClient implements PiClientBaseDatas {
           tempReject(msg)
         }
 
-        const ins = await useCloudrender({ ...options, readyCB, disconnectCB })
-        await ins.init()
-
-        this._cloudrenderIns = ins
-
-        ins.onMessage((msg: any) => {
-          try {
-            const params = JSON.parse(msg as string)
-            this.onMessage(params)
-          } catch (err) {
-            logErr(`onMessage error [${msg}]: `, err)
+        try {
+          const onMessageCb = (msg: any) => {
+            try {
+              const params = JSON.parse(msg as string)
+              this.onMessage(params)
+            } catch (err) {
+              logErr(`onMessage error [${msg}]: `, err)
+            }
           }
-        })
+
+          const ins = await useCloudrender({
+            ...options,
+            readyCB,
+            disconnectCB,
+          })
+          await ins.init()
+
+          this._cloudrenderIns = ins
+
+          ins.onMessage(onMessageCb)
+        } catch (err: any) {
+          const msg = err?.message || err
+          logErr(msg)
+
+          disconnectCB(msg)
+        }
       })
     },
   }

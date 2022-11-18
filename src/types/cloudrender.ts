@@ -42,7 +42,7 @@ export interface CloudrenderOptions {
   /**
    * 云渲染准备完成的回调
    */
-  readyCB?(): void
+  readyCB?(): void | Promise<any>
   /**
    * 云渲染断开连接的回调
    * @param msg 连接断开的说明

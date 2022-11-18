@@ -1,5 +1,5 @@
-import { Launcher, LauncherPrivate, LivePlayer } from 'live-cat'
-import { Connection } from 'ray-streaming/types'
+import type { Launcher, LauncherPrivate, LivePlayer } from 'live-cat'
+import type { Connection } from 'ray-streaming/types'
 import { CloudrenderIns, CloudrenderOptions, DisconnectMsg } from './types'
 
 const PUBLIC_CLOUD_ADDRESS = 'https://app.3dcat.live'
@@ -48,12 +48,13 @@ export async function useCloudrender(options: CloudrenderOptions) {
           startType: 1,
         },
         extendOptions: {
-          onPlay: () => {
+          onPlay: async () => {
+            onProgress?.(90)
             if (report) onReport()
 
             player!.setVideoVolume(1)
 
-            readyCB?.()
+            await readyCB?.()
             onProgress?.(100)
 
             return {}
@@ -91,7 +92,7 @@ export async function useCloudrender(options: CloudrenderOptions) {
         onProgress?.(70)
       })
     } catch (err) {
-      throw new Error('Faild to initialize cloudrender.' + err)
+      throw new Error('Faild to initialize cloudrender. ' + err)
     }
   }
 
