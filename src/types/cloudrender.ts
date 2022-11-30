@@ -66,7 +66,9 @@ export interface CloudrenderOptions {
  */
 export interface PiCloudrenderOptions
   extends Omit<CloudrenderOptions, 'readyCB' | 'disconnectCB'>,
-    ParamOfCloudInit {}
+    ParamOfCloudInit {
+  onDisconnect?(msg: string): void
+}
 
 export interface PiCloudrenderIns
   extends Pick<CloudrenderOptions, 'address' | 'appKey' | '$el'>,

@@ -85,8 +85,15 @@ class PiClient implements PiClientBaseDatas {
 
       if (!options) return Promise.reject('Missing [options].')
 
-      const { $el, address, appKey, onProgress, report, ...projectParam } =
-        options
+      const {
+        $el,
+        address,
+        appKey,
+        onDisconnect,
+        onProgress,
+        report,
+        ...projectParam
+      } = options
 
       if (!address || !appKey)
         return Promise.reject('Missing required parameters: address, appKey.')
@@ -106,12 +113,10 @@ class PiClient implements PiClientBaseDatas {
           }).catch((msg) => logErr('cloudrender init error: ' + msg))
         }
 
-        // fix: Promise resolve后的reject会被销毁
-        const tempReject = reject
         const disconnectCB = (msg: string) => {
           this.cloudrender.destroy()
 
-          tempReject(msg)
+          onDisconnect?.(msg)
         }
 
         try {
