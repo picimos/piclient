@@ -58,7 +58,7 @@
     let connected = false
     const initConfig = {
       $el: document.getElementById('container'),
-      address: "http://192.168.2.129:8088",
+      address: "http://192.168.2.20:8088",
       appKey: "IKExVbI6LBDpTXdU",
 
       token: '',
@@ -66,9 +66,13 @@
       projectId: "Pu85negwwa7oi",
       showUI: false,
 
-      report(param) {
-        console.log('===>report:', param);
-      },
+      // report(param) {
+      //   console.log('===>report:', param);
+      // },
+      onDisconnect(msg){
+        console.error('===>断开了：', msg)
+
+      }
     }
 
     var piclient = new PiClientJS.PiClient({ debug: true })
@@ -86,7 +90,7 @@
         console.log('===>readyyyy', baseDb)
         console.log('===>', piclient.classEvents);
       }).catch(err => {
-        console.error('===>断开了：', err)
+        console.error('===>初始化失败：', err)
       })
     }
 
