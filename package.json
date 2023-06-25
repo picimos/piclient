@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "serve": "cross-env NODE_ENV=development rollup -w -m -c",
-    "build": "rm -rf lib && cross-env NODE_ENV=production rollup -c",
+    "build": "cross-env NODE_ENV=production rollup -c",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "yarn build",
