@@ -215,12 +215,4 @@ Alternatively you can use it to enable cloudrender to interact with PiCIMOS.
 
 ---
 
-> ## 更多 API 请查看 [API 列表](https://github.com/ioolllzzzz/piclient.js/blob/main/PiAPIs.md)
-
----
-
-> ## [更新日志](https://github.com/ioolllzzzz/piclient.js/blob/main/CHANGELOG.md)
-
----
-
-> ## 问题反馈 [New Issues](https://github.com/ioolllzzzz/piclient.js/issues/new)
+> ## 更多 API 请查看 [API 列表](https://github.com/picimos/piclient/blob/main/PiAPIs.md)
