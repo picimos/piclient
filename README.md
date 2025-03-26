@@ -17,7 +17,7 @@ Alternatively you can use it to enable cloudrender to interact with PiCIMOS.
   直接下载或使用 CDN 链接通过 `<script>` 标签引入，将会注册一个 `PiClientJS` 全局变量。
 
   ```html
-  <script src="https://cdn.jsdelivr.net/npm/piclient.js@latest/index.umd.js"></script>
+  <script src="https://github.com/picimos/piclient/blob/e5c894c95d6bda5b60204719fdc13e7e535b8f5b/index.umd.js"></script>
   ```
 
   ```html
@@ -66,12 +66,12 @@ Alternatively you can use it to enable cloudrender to interact with PiCIMOS.
 
 - #### 直接用 `<script>` 引入
 
-  同上。但需前置引入云渲染工具相关依赖，参考[这里](https://www.3dcat.live/support/api/browser-link.html)(2、浏览器直接接入代码参考)。
+  同上。但需前置引入云渲染工具相关依赖(2、浏览器直接接入代码参考)。
 
   ```html
   <!-- 前置依赖引入 -->
   <!-- ... -->
-  <script src="https://cdn.jsdelivr.net/npm/piclient.js@latest/index.umd.js"></script>
+  <script src="https://github.com/picimos/piclient/blob/e5c894c95d6bda5b60204719fdc13e7e535b8f5b/index.umd.js"></script>
   ```
 
   ```html
