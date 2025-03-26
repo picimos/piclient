@@ -30,7 +30,7 @@ Alternatively you can use it to enable cloudrender to interact with PiCIMOS.
 
   ```html
   <script type="module">
-    import { PiClient } from 'https://cdn.jsdelivr.net/npm/piclient.js@latest/index.esm.js'
+    import { PiClient } from 'https://github.com/picimos/piclient/blob/dc109276ac2f9a83c1df777fc4eb6a46c46a23b5/index.esm.js'
   </script>
   ```
 
